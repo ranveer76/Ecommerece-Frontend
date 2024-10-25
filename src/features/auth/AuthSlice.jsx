@@ -3,24 +3,24 @@ import { checkAuth, forgotPassword, login, logout, resendOtp, resetPassword, sig
 
 const initialState={
     status:"idle",
-    errors:null,
+    errors:undefined,
     resendOtpStatus:"idle",
-    resendOtpSuccessMessage:null,
-    resendOtpError:null,
+    resendOtpSuccessMessage:undefined,
+    resendOtpError:undefined,
     signupStatus:"idle",
-    signupError:null,
+    signupError:undefined,
     loginStatus:"idle",
-    loginError:null,
-    loggedInUser:null,
+    loginError:undefined,
+    loggedInUser:undefined,
     otpVerificationStatus:"idle",
-    otpVerificationError:null,
+    otpVerificationError:undefined,
     forgotPasswordStatus:"idle",
-    forgotPasswordSuccessMessage:null,
-    forgotPasswordError:null,
+    forgotPasswordSuccessMessage:undefined,
+    forgotPasswordError:undefined,
     resetPasswordStatus:"idle",
-    resetPasswordSuccessMessage:null,
-    resetPasswordError:null,
-    successMessage:null,
+    resetPasswordSuccessMessage:undefined,
+    resetPasswordError:undefined,
+    successMessage:undefined,
     isAuthChecked:false
 }
 
@@ -68,10 +68,10 @@ const authSlice=createSlice({
     initialState:initialState,
     reducers:{
         clearAuthSuccessMessage:(state)=>{
-            state.successMessage=null
+            state.successMessage=undefined
         },
         clearAuthErrors:(state)=>{
-            state.errors=null
+            state.errors=undefined
         },
         resetAuthStatus:(state)=>{
             state.status='idle'
@@ -80,46 +80,46 @@ const authSlice=createSlice({
             state.signupStatus='idle'
         },
         clearSignupError:(state)=>{
-            state.signupError=null
+            state.signupError=undefined
         },
         resetLoginStatus:(state)=>{
             state.loginStatus='idle'
         },
         clearLoginError:(state)=>{
-            state.loginError=null
+            state.loginError=undefined
         },
         resetOtpVerificationStatus:(state)=>{
             state.otpVerificationStatus='idle'
         },
         clearOtpVerificationError:(state)=>{
-            state.otpVerificationError=null
+            state.otpVerificationError=undefined
         },
         resetResendOtpStatus:(state)=>{
             state.resendOtpStatus='idle'
         },
         clearResendOtpError:(state)=>{
-            state.resendOtpError=null
+            state.resendOtpError=undefined
         },
         clearResendOtpSuccessMessage:(state)=>{
-            state.resendOtpSuccessMessage=null
+            state.resendOtpSuccessMessage=undefined
         },
         resetForgotPasswordStatus:(state)=>{
             state.forgotPasswordStatus='idle'
         },
         clearForgotPasswordSuccessMessage:(state)=>{
-            state.forgotPasswordSuccessMessage=null
+            state.forgotPasswordSuccessMessage=undefined
         },
         clearForgotPasswordError:(state)=>{
-            state.forgotPasswordError=null
+            state.forgotPasswordError=undefined
         },
         resetResetPasswordStatus:(state)=>{
             state.resetPasswordStatus='idle'
         },
         clearResetPasswordSuccessMessage:(state)=>{
-            state.resetPasswordSuccessMessage=null
+            state.resetPasswordSuccessMessage=undefined
         },
         clearResetPasswordError:(state)=>{
-            state.resetPasswordError=null
+            state.resetPasswordError=undefined
         }
 
         
@@ -203,7 +203,7 @@ const authSlice=createSlice({
             })
             .addCase(logoutAsync.fulfilled,(state)=>{
                 state.status='fullfilled'
-                state.loggedInUser=null
+                state.loggedInUser=undefined
             })
             .addCase(logoutAsync.rejected,(state,action)=>{
                 state.status='rejected'

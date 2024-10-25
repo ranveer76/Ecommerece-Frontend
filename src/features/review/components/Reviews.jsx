@@ -10,7 +10,6 @@ import {toast} from 'react-toastify'
 import CreateIcon from '@mui/icons-material/Create';
 import {MotionConfig, motion} from 'framer-motion'
 import { useTheme } from '@mui/material'
-// import CloseIcon from '@mui/icons-material/Close';
 
 export const Reviews = ({productId,averageRating}) => {
 
@@ -112,8 +111,8 @@ export const Reviews = ({productId,averageRating}) => {
 
                             <Stack rowGap={2}>
                                 {
-                                    [5,4,3,2,1].map((number)=>(
-                                        <Stack flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} columnGap={1}>
+                                    [5,4,3,2,1].map((number,i)=>(
+                                        <Stack key={i} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} columnGap={1}>
                                             <Typography sx={{whiteSpace:"nowrap"}}>{number} star</Typography>
                                             <LinearProgress sx={{width:"100%",height:"1rem",borderRadius:"4px"}} variant='determinate' value={(ratingCounts[number]/reviews?.length)*100}/>   
                                             <Typography>{parseInt(ratingCounts[number]/reviews?.length*100)}%</Typography>

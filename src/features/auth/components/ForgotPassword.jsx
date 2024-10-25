@@ -9,7 +9,11 @@ import { Link } from 'react-router-dom'
 import {motion} from 'framer-motion'
 
 export const ForgotPassword = () => {
-    const {register,handleSubmit,reset,formState: { errors }} = useForm()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        defaultValues: {
+            email:''
+        }
+    })
     const dispatch=useDispatch()
     const status=useSelector(selectForgotPasswordStatus)
     const error=useSelector(selectForgotPasswordError)

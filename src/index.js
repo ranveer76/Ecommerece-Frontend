@@ -7,6 +7,10 @@ import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from '@mui/material';
 import theme from './theme/theme';
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import "swiper/css/autoplay";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

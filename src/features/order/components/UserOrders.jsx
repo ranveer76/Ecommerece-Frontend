@@ -100,7 +100,7 @@ export const UserOrders = () => {
 
                         {
                             orders && orders.map((order)=>(
-                                <Stack p={is480?0:2} component={is480?"":Paper} elevation={1} rowGap={2}>
+                                <Stack key={order._id} p={is480?0:2} component={is480?"":Paper} elevation={1} rowGap={2}>
                                     
                                     <Stack flexDirection={'row'} rowGap={'1rem'}  justifyContent={'space-between'} flexWrap={'wrap'}>
                                         <Stack flexDirection={'row'} columnGap={4} rowGap={'1rem'} flexWrap={'wrap'}>
@@ -130,7 +130,7 @@ export const UserOrders = () => {
                                         {
                                             order.item.map((product)=>(
                                                 
-                                                <Stack mt={2} flexDirection={'row'} rowGap={is768?'2rem':''} columnGap={4} flexWrap={is768?"wrap":"nowrap"}>
+                                                <Stack key={product._id} mt={2} flexDirection={'row'} rowGap={is768?'2rem':''} columnGap={4} flexWrap={is768?"wrap":"nowrap"}>
                                                     
                                                     <Stack>
                                                         <img style={{width:"100%",aspectRatio:is480?3/2:1/1,objectFit:"contain"}} src={product.product.images[0]} alt="" />

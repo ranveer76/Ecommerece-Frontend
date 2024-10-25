@@ -9,6 +9,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Avatar, Button, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { motion } from 'framer-motion';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import { useForm } from "react-hook-form"
@@ -79,14 +82,37 @@ export const AdminOrders = () => {
 
 
   return (
+    <Stack justifyContent={"center"} alignItems={"center"}>
+      <Stack
+        mt={5}
+        mb={3}
+        component={"form"}
+        noValidate
+        onSubmit={handleSubmit(handleUpdateOrder)}
+      >
+        <Stack
+          alignSelf={"flex-start"}
+          flexDirection={"row"}
+          columnGap={1}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          <motion.div whileHover={{ x: -5 }}>
+            <IconButton component={Link} to={"/"}>
+              <ArrowBackIcon fontSize={is480 ? "medium" : "large"} />
+            </IconButton>
+          </motion.div>
+          <Typography variant="h4" fontWeight={500}>
+            Orders
+          </Typography>
+        </Stack>
 
-    <Stack justifyContent={'center'} alignItems={'center'}>
-
-      <Stack mt={5} mb={3} component={'form'} noValidate onSubmit={handleSubmit(handleUpdateOrder)}>
-
-        {
-          orders.length?
-          <TableContainer sx={{width:is1620?"95vw":"auto",overflowX:'auto'}} component={Paper} elevation={2}>
+        {orders.length ? (
+          <TableContainer
+            sx={{ width: is1620 ? "95vw" : "auto", overflowX: "auto" }}
+            component={Paper}
+            elevation={2}
+          >
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
@@ -103,98 +129,114 @@ export const AdminOrders = () => {
               </TableHead>
 
               <TableBody>
-
-                {
-                orders.length && orders.map((order,index) => (
-
-                  <TableRow key={order._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-
-                    <TableCell component="th" scope="row">{index}</TableCell>
-                    <TableCell align="right">{order._id}</TableCell>
-                    <TableCell align="right">
-                      {
-                        order.item.map((product)=>(
-                          <Stack mt={2} flexDirection={'row'} alignItems={'center'} columnGap={2}>
+                {orders.length &&
+                  orders.map((order, index) => (
+                    <TableRow
+                      key={order._id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {index}
+                      </TableCell>
+                      <TableCell align="right">{order._id}</TableCell>
+                      <TableCell align="right">
+                        {order.item.map((product) => (
+                            <Stack
+                                key={product.product.title}
+                            mt={2}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            columnGap={2}
+                          >
                             <Avatar src={product.product.thumbnail}></Avatar>
                             <Typography>{product.product.title}</Typography>
                           </Stack>
-                        ))
-                      }
-                    </TableCell>
-                    <TableCell align="right">{order.total}</TableCell>
-                    <TableCell align="right">
-                      <Stack>
-                        <Typography>{order?.address[0]?.street || ""}</Typography>
-                        <Typography>{order?.address[0]?.city || ""}</Typography>
-                        <Typography>{order?.address[0]?.state || ""}</Typography>
-                        <Typography>{order?.address[0]?.postalCode || ""}</Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell align="right">{order.paymentMode}</TableCell>
-                    <TableCell align="right">{new Date(order.createdAt).toDateString()}</TableCell>
+                        ))}
+                      </TableCell>
+                      <TableCell align="right">{order.total}</TableCell>
+                      <TableCell align="right">
+                        <Stack>
+                          <Typography>
+                            {order?.address[0]?.street || ""}
+                          </Typography>
+                          <Typography>
+                            {order?.address[0]?.city || ""}
+                          </Typography>
+                          <Typography>
+                            {order?.address[0]?.state || ""}
+                          </Typography>
+                          <Typography>
+                            {order?.address[0]?.postalCode || ""}
+                          </Typography>
+                        </Stack>
+                      </TableCell>
+                      <TableCell align="right">{order.paymentMode}</TableCell>
+                      <TableCell align="right">
+                        {new Date(order.createdAt).toDateString()}
+                      </TableCell>
 
-                    <TableCell align="right">
-
-                        {
-                          editIndex===index?(
-
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Update status</InputLabel>
-                          <Select
-                            defaultValue={order.status}
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Update status"
-                            {...register('status',{required:'Status is required'})}
+                      <TableCell align="right">
+                        {editIndex === index ? (
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Update status
+                            </InputLabel>
+                            <Select
+                              defaultValue={order.status}
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              label="Update status"
+                              {...register("status", {
+                                required: "Status is required",
+                              })}
                             >
-                            
-                            {
-                              editOptions.map((option)=>(
+                              {editOptions.map((option) => (
                                 <MenuItem value={option}>{option}</MenuItem>
-                              ))
-                            }
-                          </Select>
-                        </FormControl>
-                        ):<Chip label={order.status} sx={getStatusColor(order.status)}/>
-                        }
-                      
-                    </TableCell>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <Chip
+                            label={order.status}
+                            sx={getStatusColor(order.status)}
+                          />
+                        )}
+                      </TableCell>
 
-                    <TableCell align="right">
-
-                      {
-                        editIndex===index?(
+                      <TableCell align="right">
+                        {editIndex === index ? (
                           <Button>
-
-                            <IconButton type='submit'><CheckCircleOutlinedIcon/></IconButton>
+                            <IconButton type="submit">
+                              <CheckCircleOutlinedIcon />
+                            </IconButton>
                           </Button>
-                        )
-                        :
-                        <IconButton onClick={()=>setEditIndex(index)}><EditOutlinedIcon/></IconButton>
-                      }
-
-                    </TableCell>
-
-                  </TableRow>
-                ))}
-
+                        ) : (
+                          <IconButton onClick={() => setEditIndex(index)}>
+                            <EditOutlinedIcon />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
-          :
-          <Stack width={is480?"auto":'30rem'} justifyContent={'center'}>
-
-            <Stack rowGap={'1rem'}>
-                <Lottie animationData={noOrdersAnimation}/>
-                <Typography textAlign={'center'} alignSelf={'center'} variant='h6' fontWeight={400}>There are no orders currently</Typography>
+        ) : (
+          <Stack width={is480 ? "auto" : "30rem"} justifyContent={"center"}>
+            <Stack rowGap={"1rem"}>
+              <Lottie animationData={noOrdersAnimation} />
+              <Typography
+                textAlign={"center"}
+                alignSelf={"center"}
+                variant="h6"
+                fontWeight={400}
+              >
+                There are no orders currently
+              </Typography>
             </Stack>
-              
-
-          </Stack>  
-        }
-    
+          </Stack>
+        )}
+      </Stack>
     </Stack>
-    
-    </Stack>
-  )
+  );
 }

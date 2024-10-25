@@ -10,7 +10,11 @@ import {toast} from 'react-toastify'
 
 export const OtpVerfication = () => {
     
-    const {register,handleSubmit,formState: { errors }} = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        defaultValues: {
+            otp:''
+        }
+    })
     const dispatch=useDispatch()
     const loggedInUser=useSelector(selectLoggedInUser)
     const navigate=useNavigate()

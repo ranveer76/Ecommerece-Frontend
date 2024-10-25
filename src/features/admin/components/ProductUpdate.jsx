@@ -2,7 +2,9 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { clearSelectedProduct, fetchProductByIdAsync,resetProductUpdateStatus, selectProductUpdateStatus, selectSelectedProduct, updateProductByIdAsync } from '../../products/ProductSlice'
-import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography, useMediaQuery, useTheme, IconButton } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { motion } from 'framer-motion'
 import { useForm } from "react-hook-form"
 import { selectBrands } from '../../brands/BrandSlice'
 import { selectCategories } from '../../categories/CategoriesSlice'
@@ -59,100 +61,191 @@ export const ProductUpdate = () => {
 
 
   return (
-    <Stack p={'0 16px'} justifyContent={'center'} alignItems={'center'} flexDirection={'row'} >
-        
-        {
-            selectedProduct &&
-        
-        <Stack width={is1100?"100%":"60rem"} rowGap={4} mt={is480?4:6} mb={6} component={'form'} noValidate onSubmit={handleSubmit(handleProductUpdate)}> 
-            
-            <Stack rowGap={3}>
-                <Stack>
-                    <Typography variant='h6' fontWeight={400} gutterBottom>Title</Typography>
-                    <TextField {...register("title",{required:'Title is required',value:selectedProduct.title})}/>
-                </Stack> 
+    <Stack
+      p={"0 16px"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      flexDirection={"row"}
+    >
+      <Stack
+        alignSelf={"flex-start"}
+        flexDirection={"row"}
+        columnGap={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <motion.div whileHover={{ x: -5 }}>
+          <IconButton component={Link} to={"/"}>
+            <ArrowBackIcon fontSize={is480 ? "medium" : "large"} />
+          </IconButton>
+        </motion.div>
+        <Typography variant="h4" fontWeight={500}>
+          {selectedProduct?.title}
+        </Typography>
+      </Stack>
 
-                <Stack flexDirection={'row'} >
-
-                    <FormControl fullWidth>
-                        <InputLabel id="brand-selection">Brand</InputLabel>
-                        <Select defaultValue={selectedProduct.brand._id} {...register("brand",{required:"Brand is required"})} labelId="brand-selection" label="Brand">
-                            
-                            {
-                                brands.map((brand)=>(
-                                    <MenuItem value={brand._id}>{brand.name}</MenuItem>
-                                ))
-                            }
-
-                        </Select>
-                    </FormControl>
-
-
-                    <FormControl fullWidth>
-                        <InputLabel id="category-selection">Category</InputLabel>
-                        <Select defaultValue={selectedProduct.category._id} {...register("category",{required:"category is required"})} labelId="category-selection" label="Category">
-                            
-                            {
-                                categories.map((category)=>(
-                                    <MenuItem value={category._id}>{category.name}</MenuItem>
-                                ))
-                            }
-
-                        </Select>
-                    </FormControl>
-
-                </Stack>
-
-
-                <Stack>
-                    <Typography variant='h6' fontWeight={400}  gutterBottom>Description</Typography>
-                    <TextField multiline rows={4} {...register("description",{required:"Description is required",value:selectedProduct.description})}/>
-                </Stack>
-
-                <Stack flexDirection={'row'}>
-                    <Stack flex={1}>
-                        <Typography variant='h6' fontWeight={400}  gutterBottom>Price</Typography>
-                        <TextField type='number' {...register("price",{required:"Price is required",value:selectedProduct.price})}/>
-                    </Stack>
-                    <Stack flex={1}>
-                        <Typography variant='h6' fontWeight={400}  gutterBottom>Discount {is480?"%":"Percentage"}</Typography>
-                        <TextField type='number' {...register("discountPercentage",{required:"discount percentage is required",value:selectedProduct.discountPercentage})}/>
-                    </Stack>
-                </Stack>
-
-                <Stack>
-                    <Typography variant='h6'  fontWeight={400} gutterBottom>Stock Quantity</Typography>
-                    <TextField type='number' {...register("stockQuantity",{required:"Stock Quantity is required",value:selectedProduct.stockQuantity})}/>
-                </Stack>
-                <Stack>
-                    <Typography variant='h6'  fontWeight={400} gutterBottom>Thumbnail</Typography>
-                    <TextField {...register("thumbnail",{required:"Thumbnail is required",value:selectedProduct.thumbnail})}/>
-                </Stack>
-
-                <Stack>
-                    <Typography variant='h6'  fontWeight={400} gutterBottom>Product Images</Typography>
-
-                    <Stack rowGap={2}>
-                        {
-                            selectedProduct.images.map((image,index)=>(
-                                <TextField {...register(`image${index}`,{required:"Image is required",value:image})}/>
-                            ))
-                        }
-                    </Stack>
-
-                </Stack>
-
+      {selectedProduct && (
+        <Stack
+          width={is1100 ? "100%" : "60rem"}
+          rowGap={4}
+          mt={is480 ? 4 : 6}
+          mb={6}
+          component={"form"}
+          noValidate
+          onSubmit={handleSubmit(handleProductUpdate)}
+        >
+          <Stack rowGap={3}>
+            <Stack>
+              <Typography variant="h6" fontWeight={400} gutterBottom>
+                Title
+              </Typography>
+              <TextField
+                {...register("title", {
+                  required: "Title is required",
+                  value: selectedProduct.title,
+                })}
+              />
             </Stack>
 
-            <Stack flexDirection={'row'} alignSelf={'flex-end'} columnGap={is480?1:2}>
-                <Button size={is480?'medium':'large'} variant='contained' type='submit'>Update</Button>
-                <Button size={is480?'medium':'large'} variant='outlined' color='error' component={Link} to={'/admin/dashboard'}>Cancel</Button>
+            <Stack flexDirection={"row"}>
+              <FormControl fullWidth>
+                <InputLabel id="brand-selection">Brand</InputLabel>
+                <Select
+                  defaultValue={selectedProduct.brand._id || ''}
+                  {...register("brand", { required: "Brand is required" })}
+                  labelId="brand-selection"
+                  label="Brand"
+                >
+                  {brands.map((brand) => (
+                    <MenuItem value={brand._id || ''}>{brand.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel id="category-selection">Category</InputLabel>
+                <Select
+                  defaultValue={selectedProduct.category._id || ''}
+                  {...register("category", {
+                    required: "category is required",
+                  })}
+                  labelId="category-selection"
+                  label="Category"
+                >
+                  {categories.map((category) => (
+                    <MenuItem value={category._id || ''} key={category | ''}>{category.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
 
+            <Stack>
+              <Typography variant="h6" fontWeight={400} gutterBottom>
+                Description
+              </Typography>
+              <TextField
+                multiline
+                rows={4}
+                {...register("description", {
+                  required: "Description is required",
+                  value: selectedProduct.description,
+                })}
+              />
+            </Stack>
 
+            <Stack flexDirection={"row"}>
+              <Stack flex={1}>
+                <Typography variant="h6" fontWeight={400} gutterBottom>
+                  Price
+                </Typography>
+                <TextField
+                  type="number"
+                  {...register("price", {
+                    required: "Price is required",
+                    value: selectedProduct.price,
+                  })}
+                />
+              </Stack>
+              <Stack flex={1}>
+                <Typography variant="h6" fontWeight={400} gutterBottom>
+                  Discount {is480 ? "%" : "Percentage"}
+                </Typography>
+                <TextField
+                  type="number"
+                  {...register("discountPercentage", {
+                    required: "discount percentage is required",
+                    value: selectedProduct.discountPercentage,
+                  })}
+                />
+              </Stack>
+            </Stack>
+
+            <Stack>
+              <Typography variant="h6" fontWeight={400} gutterBottom>
+                Stock Quantity
+              </Typography>
+              <TextField
+                type="number"
+                {...register("stockQuantity", {
+                  required: "Stock Quantity is required",
+                  value: selectedProduct.stockQuantity,
+                })}
+              />
+            </Stack>
+            <Stack>
+              <Typography variant="h6" fontWeight={400} gutterBottom>
+                Thumbnail
+              </Typography>
+              <TextField
+                {...register("thumbnail", {
+                  required: "Thumbnail is required",
+                  value: selectedProduct.thumbnail,
+                })}
+              />
+            </Stack>
+
+            <Stack>
+              <Typography variant="h6" fontWeight={400} gutterBottom>
+                Product Images
+              </Typography>
+
+              <Stack rowGap={2}>
+                {selectedProduct.images.map((image, index) => (
+                  <TextField
+                    {...register(`image${index}`, {
+                      required: "Image is required",
+                      value: image,
+                    })}
+                  />
+                ))}
+              </Stack>
+            </Stack>
+          </Stack>
+
+          <Stack
+            flexDirection={"row"}
+            alignSelf={"flex-end"}
+            columnGap={is480 ? 1 : 2}
+          >
+            <Button
+              size={is480 ? "medium" : "large"}
+              variant="contained"
+              type="submit"
+            >
+              Update
+            </Button>
+            <Button
+              size={is480 ? "medium" : "large"}
+              variant="outlined"
+              color="error"
+              component={Link}
+              to={"/admin/dashboard"}
+            >
+              Cancel
+            </Button>
+          </Stack>
         </Stack>
-        }
-
+      )}
     </Stack>
-  )
+  );
 }

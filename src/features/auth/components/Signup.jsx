@@ -15,7 +15,14 @@ export const Signup = () => {
   const status=useSelector(selectSignupStatus)
   const error=useSelector(selectSignupError)
   const loggedInUser=useSelector(selectLoggedInUser)
-  const {register,handleSubmit,reset,formState: { errors }} = useForm()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        defaultValues: {
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+      }
+  })
   const navigate=useNavigate()
   const theme=useTheme()
   const is900=useMediaQuery(theme.breakpoints.down(900))

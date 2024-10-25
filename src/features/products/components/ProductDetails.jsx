@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   clearSelectedProduct,
   fetchProductByIdAsync,
@@ -16,7 +16,9 @@ import {
   Typography,
   useMediaQuery,
   Button,
+  IconButton,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   addToCartAsync,
   resetCartItemAddStatus,
@@ -32,8 +34,11 @@ import {
 } from "../../review/ReviewSlice";
 import { Reviews } from "../../review/components/Reviews";
 import { toast } from "react-toastify";
-import { motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
+import Favorite from "@mui/icons-material/Favorite";
 import {
   createWishlistItemAsync,
   deleteWishlistItemByIdAsync,
@@ -44,8 +49,11 @@ import {
   selectWishlistItems,
 } from "../../wishlist/WishlistSlice";
 import { useTheme } from "@mui/material";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.css";
+import { Autoplay } from "swiper/modules";
+import MobileStepper from "@mui/material/MobileStepper";
 import Lottie from "lottie-react";
 import { loadingAnimation } from "../../../assets";
 
@@ -63,13 +71,15 @@ export const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColorIndex, setSelectedColorIndex] = useState(-1);
   const reviews = useSelector(selectReviews);
-  const [activeStep, setActiveStep] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const theme = useTheme();
   const is1420 = useMediaQuery(theme.breakpoints.down(1420));
   const is990 = useMediaQuery(theme.breakpoints.down(990));
   const is840 = useMediaQuery(theme.breakpoints.down(840));
   const is500 = useMediaQuery(theme.breakpoints.down(500));
   const is480 = useMediaQuery(theme.breakpoints.down(480));
+  const is387 = useMediaQuery(theme.breakpoints.down(387));
+  const is340 = useMediaQuery(theme.breakpoints.down(340));
 
   const wishlistItems = useSelector(selectWishlistItems);
 
@@ -188,6 +198,22 @@ export const ProductDetails = () => {
     }
   };
 
+  const [activeStep, setActiveStep] = React.useState(0);
+  const swiperRef = React.useRef(null);
+  const [maxSteps, setMaxsteps] = useState(0);
+
+  useEffect(() => {
+    if (productFetchStatus === "fullfilled") setMaxsteps(product?.images?.length);
+  }, [product, productFetchStatus]);
+
+  const handleNext = () => {
+    swiperRef.current.swiper.slideNext();
+  };
+
+  const handleBack = () => {
+    swiperRef.current.swiper.slidePrev();
+  };
+
   return (
     <>
       {!(
@@ -212,6 +238,22 @@ export const ProductDetails = () => {
             </Stack>
           ) : (
             <Stack>
+              <Stack
+                alignSelf={"flex-start"}
+                flexDirection={"row"}
+                columnGap={1}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <motion.div whileHover={{ x: -5 }}>
+                  <IconButton component={Link} to={"/"}>
+                    <ArrowBackIcon fontSize={is480 ? "medium" : "large"} />
+                  </IconButton>
+                </motion.div>
+                <Typography variant="h4" fontWeight={500}>
+                  {product?.title}
+                </Typography>
+              </Stack>
               <Stack
                 width={is480 ? "auto" : is1420 ? "auto" : "88rem"}
                 p={is480 ? 2 : 0}
@@ -241,12 +283,12 @@ export const ProductDetails = () => {
                       }}
                     >
                       {product &&
-                        product.images.map((image, index) => (
+                        product?.images?.map((image, index) => (
                           <motion.div
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 1 }}
                             style={{ width: "200px", cursor: "pointer" }}
-                            onClick={() => setActiveStep(index)}
+                            onClick={() => setSelectedImageIndex(index)}
                           >
                             <img
                               style={{ width: "100%", objectFit: "contain" }}
@@ -260,139 +302,388 @@ export const ProductDetails = () => {
 
                   <Stack mt={is480 ? "0rem" : "5rem"}>
                     {is1420 ? (
-                      <img
-                        style={{ width: "90%", objectFit: "contain" }}
-                        src={product.images[activeStep]}
-                        alt={`${product.title}`}
-                      />
+                      <Stack width={is480 ? "100%" : is990 ? "400px" : "500px"}>
+                        <Swiper
+                          modules={[Autoplay]}
+                          spaceBetween={50}
+                          slidesPerView={1}
+                          autoplay={{
+                            delay: 3000,
+                            disableOnInteraction: false,
+                          }}
+                          onSlideChange={(swiper) =>
+                            setActiveStep(swiper.realIndex)
+                          }
+                          ref={swiperRef}
+                          style={{ height: "auto", width: "100%" }}
+                        >
+                          {product?.images?.map((image, index) => (
+                            <SwiperSlide key={index}>
+                              <Box
+                                component="img"
+                                sx={{
+                                  width: "100%",
+                                  height: "auto",
+                                  objectFit: "contain",
+                                  minHeight: "300px",
+                                }}
+                                src={image}
+                                alt={product.title}
+                              />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+
+                        { maxSteps && (maxSteps >= 1) &&
+                          <MobileStepper
+                            steps={maxSteps}
+                            position="static"
+                            activeStep={activeStep}
+                            nextButton={
+                              <Button
+                                size="small"
+                                onClick={handleNext}
+                                disabled={activeStep === maxSteps - 1}
+                              >
+                                Next
+                                {theme.direction === "rtl" ? (
+                                  <KeyboardArrowLeft />
+                                ) : (
+                                  <KeyboardArrowRight />
+                                )}
+                              </Button>
+                            }
+                            backButton={
+                              <Button
+                                size="small"
+                                onClick={handleBack}
+                                disabled={activeStep === 0}
+                              >
+                                {theme.direction === "rtl" ? (
+                                  <KeyboardArrowRight />
+                                ) : (
+                                  <KeyboardArrowLeft />
+                                )}
+                                Back
+                              </Button>
+                            }
+                          />
+                        }
+                      </Stack>
                     ) : (
-                      <Swiper
-                        spaceBetween={50}
-                        slidesPerView={1}
-                        onSlideChange={(swiper) =>
-                          setActiveStep(swiper.activeIndex)
+                      <div style={{ width: "100%" }}>
+                        <img
+                          style={{
+                            width: "100%",
+                            objectFit: "contain",
+                            aspectRatio: 1 / 1,
+                          }}
+                          src={product?.images[selectedImageIndex] || ''}
+                          alt={`${product?.title}`}
+                        />
+                      </div>
+                    )}
+                  </Stack>
+                </Stack>
+
+                <Stack rowGap={"1.5rem"} width={is480 ? "100%" : "25rem"}>
+                  <Stack rowGap={".5rem"}>
+                    <Typography variant="h4" fontWeight={600}>
+                      {product?.title}
+                    </Typography>
+
+                    <Stack
+                      sx={{
+                        flexDirection: "row",
+                        columnGap: is340 ? ".5rem" : "1rem",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        rowGap: "1rem",
+                      }}
+                    >
+                      <Rating value={averageRating} readOnly />
+                      <Typography>
+                        ({" "}
+                        {totalReviews === 0
+                          ? "No reviews"
+                          : totalReviews === 1
+                          ? `${totalReviews} Review`
+                          : `${totalReviews} Reviews`}{" "}
+                        )
+                      </Typography>
+                      <Typography
+                        color={
+                          product?.stockQuantity <= 10
+                            ? "error"
+                            : product?.stockQuantity <= 20
+                            ? "orange"
+                            : "green"
                         }
                       >
-                        {product.images.map((image, index) => (
-                          <SwiperSlide key={index}>
-                            <img
-                              style={{ width: "100%", objectFit: "contain" }}
-                              src={image}
-                              alt={`${product.title}`}
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    )}
-                  </Stack>
-                </Stack>
-
-                <Stack
-                  sx={{ flex: 1, paddingRight: is500 ? 0 : "2rem" }}
-                  rowGap={2}
-                >
-                  <Typography variant="h4" fontWeight={600}>
-                    {product.title}
-                  </Typography>
-                  <Typography fontSize={"1.2rem"} fontWeight={600}>
-                    ₹{product.price}
-                  </Typography>
-
-                  <Stack>
-                    <Rating
-                      readOnly
-                      value={totalReviews === 0 ? 0 : averageRating}
-                      precision={0.5}
-                      sx={{ color: "#FFA000" }}
-                    />
-                    {totalReviews > 0 && (
-                      <Typography color="text.secondary" variant="caption">
-                        {totalReviews} reviews
+                        {product?.stockQuantity <= 10
+                          ? `Only ${product?.stockQuantity} left`
+                          : product?.stockQuantity <= 20
+                          ? "Only few left"
+                          : "In Stock"}
                       </Typography>
-                    )}
+                    </Stack>
+
+                    <Typography variant="h5">${product?.price}</Typography>
                   </Stack>
 
-                  <Stack mt={3} direction="row" spacing={2}>
-                    {SIZES.map((size, index) => (
-                      <Box
-                        key={index}
-                        sx={{
-                          cursor: "pointer",
-                          border:
-                            selectedSize === size
-                              ? "1px solid #FF9B00"
-                              : "1px solid lightgrey",
-                          borderRadius: "2rem",
-                          padding: "0.5rem 1rem",
-                          "&:hover": {
-                            border: "1px solid #FF9B00",
-                          },
-                        }}
-                        onClick={() => handleSizeSelect(size)}
+                  <Stack rowGap={".8rem"}>
+                    <Typography>{product?.description}</Typography>
+                    <hr />
+                  </Stack>
+
+                  {!loggedInUser?.isAdmin && (
+                    <Stack sx={{ rowGap: "1.3rem" }} width={"fit-content"}>
+                      <Stack
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        columnGap={is387 ? "5px" : "1rem"}
+                        width={"fit-content"}
                       >
-                        <Typography color="text.secondary">{size}</Typography>
-                      </Box>
-                    ))}
-                  </Stack>
+                        <Typography>Colors: </Typography>
+                        <Stack
+                          flexDirection={"row"}
+                          columnGap={is387 ? ".5rem" : ".2rem"}
+                        >
+                          {COLORS.map((color, index) => (
+                              <div
+                                  key={color + index}
+                              style={{
+                                backgroundColor: "white",
+                                border:
+                                  selectedColorIndex === index
+                                    ? `1px solid ${theme.palette.primary.dark}`
+                                    : "",
+                                width: is340 ? "40px" : "50px",
+                                height: is340 ? "40px" : "50px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "100%",
+                              }}
+                            >
+                              <div
+                                onClick={() => setSelectedColorIndex(index)}
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  border:
+                                    color === "#F6F6F6"
+                                      ? "1px solid grayText"
+                                      : "",
+                                  backgroundColor: color,
+                                  borderRadius: "100%",
+                                }}
+                              ></div>
+                            </div>
+                          ))}
+                        </Stack>
+                      </Stack>
 
-                  <Stack mt={2} direction="row" spacing={2}>
-                    {COLORS.map((color, index) => (
-                      <Box
-                        key={index}
-                        sx={{
-                          width: "40px",
-                          height: "40px",
-                          borderRadius: "50%",
-                          backgroundColor: color,
-                          border:
-                            selectedColorIndex === index
-                              ? "2px solid #FF9B00"
-                              : "2px solid white",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => setSelectedColorIndex(index)}
-                      />
-                    ))}
-                  </Stack>
+                      <Stack
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        columnGap={is387 ? "5px" : "1rem"}
+                        width={"fit-content"}
+                      >
+                        <Typography>Size: </Typography>
+                        <Stack
+                          flexDirection={"row"}
+                          columnGap={is387 ? ".5rem" : "1rem"}
+                        >
+                          {SIZES.map((size) => (
+                              <motion.div
+                                  key={size}
+                              onClick={() => handleSizeSelect(size)}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 1 }}
+                              style={{
+                                border:
+                                  selectedSize === size
+                                    ? ""
+                                    : "1px solid grayText",
+                                borderRadius: "8px",
+                                width: "30px",
+                                height: "30px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                cursor: "pointer",
+                                padding: "1.2rem",
+                                backgroundColor:
+                                  selectedSize === size
+                                    ? "#DB4444"
+                                    : "whitesmoke",
+                                color: selectedSize === size ? "white" : "",
+                              }}
+                            >
+                              <p>{size}</p>
+                            </motion.div>
+                          ))}
+                        </Stack>
+                      </Stack>
 
-                  <Stack direction="row" spacing={2}>
-                    <Button onClick={handleDecreaseQty}>-</Button>
-                    <Typography>{quantity}</Typography>
-                    <Button onClick={handleIncreaseQty}>+</Button>
-                  </Stack>
+                      <Stack
+                        flexDirection={"row"}
+                        columnGap={is387 ? ".3rem" : "1.5rem"}
+                        width={"100%"}
+                      >
+                        <Stack
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          justifyContent={"space-between"}
+                        >
+                          <MotionConfig
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 1 }}
+                          >
+                            <motion.button
+                              onClick={handleDecreaseQty}
+                              style={{
+                                padding: "10px 15px",
+                                fontSize: "1.050rem",
+                                backgroundColor: "",
+                                color: "black",
+                                outline: "none",
+                                border: "1px solid black",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              -
+                            </motion.button>
+                            <p
+                              style={{
+                                margin: "0 1rem",
+                                fontSize: "1.1rem",
+                                fontWeight: "400",
+                              }}
+                            >
+                              {quantity}
+                            </p>
+                            <motion.button
+                              onClick={handleIncreaseQty}
+                              style={{
+                                padding: "10px 15px",
+                                fontSize: "1.050rem",
+                                backgroundColor: "black",
+                                color: "white",
+                                outline: "none",
+                                border: "none",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              +
+                            </motion.button>
+                          </MotionConfig>
+                        </Stack>
 
-                  <Button
-                    disabled={isProductAlreadyInCart}
-                    onClick={handleAddToCart}
-                    variant="contained"
-                    size="large"
+                        {isProductAlreadyInCart ? (
+                          <button
+                            style={{
+                              padding: "10px 15px",
+                              fontSize: "1.050rem",
+                              backgroundColor: "black",
+                              color: "white",
+                              outline: "none",
+                              border: "none",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            In Cart
+                          </button>
+                        ) : (
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 1 }}
+                            onClick={handleAddToCart}
+                            style={{
+                              padding: "10px 15px",
+                              fontSize: "1.050rem",
+                              backgroundColor: "black",
+                              color: "white",
+                              outline: "none",
+                              border: "none",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            Add To Cart
+                          </motion.button>
+                        )}
+
+                        <motion.div
+                          style={{
+                            border: "1px solid grayText",
+                            borderRadius: "4px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Checkbox
+                            checked={isProductAlreadyinWishlist}
+                            onChange={(e) => handleAddRemoveFromWishlist(e)}
+                            icon={<FavoriteBorder />}
+                            checkedIcon={<Favorite sx={{ color: "red" }} />}
+                          />
+                        </motion.div>
+                      </Stack>
+                    </Stack>
+                  )}
+
+                  <Stack
+                    mt={3}
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      border: "1px grayText solid",
+                      borderRadius: "7px",
+                    }}
                   >
-                    {isProductAlreadyInCart ? "Added to Cart" : "Add to Cart"}
-                  </Button>
-
-                  <Stack direction="row" alignItems="center">
-                    <Checkbox
-                      checked={isProductAlreadyinWishlist}
-                      onChange={handleAddRemoveFromWishlist}
-                    />
-                    <Typography>Add to Wishlist</Typography>
-                  </Stack>
-
-                  <Stack direction="row" spacing={1} mt={2}>
-                    <LocalShippingOutlinedIcon />
-                    <Typography>Free Shipping</Typography>
+                    <Stack
+                      p={2}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      columnGap={"1rem"}
+                      width={"100%"}
+                      justifyContent={"flex-sart"}
+                    >
+                      <Box>
+                        <LocalShippingOutlinedIcon />
+                      </Box>
+                      <Stack>
+                        <Typography>Free Delivery</Typography>
+                        <Typography>
+                          Enter your postal for delivery availabity
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                    <hr style={{ width: "100%" }} />
+                    <Stack
+                      p={2}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      width={"100%"}
+                      columnGap={"1rem"}
+                      justifyContent={"flex-start"}
+                    >
+                      <Box>
+                        <CachedOutlinedIcon />
+                      </Box>
+                      <Stack>
+                        <Typography>Return Delivery</Typography>
+                        <Typography>Free 30 Days Delivery Returns</Typography>
+                      </Stack>
+                    </Stack>
                   </Stack>
                 </Stack>
               </Stack>
 
-              <Stack mt={5}>
-                <Typography variant="h6">Description</Typography>
-                <Typography variant="body1">{product.description}</Typography>
-              </Stack>
-
-              <Stack mt={5}>
-                <Typography variant="h6">Reviews</Typography>
-                <Reviews reviews={reviews} />
+              <Stack width={is1420 ? "auto" : "88rem"} p={is480 ? 2 : 0}>
+                <Reviews productId={id} averageRating={averageRating} />
               </Stack>
             </Stack>
           )}

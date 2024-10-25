@@ -9,7 +9,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {MotionConfig,motion} from 'framer-motion'
 
 export const ResetPassword = () => {
-    const {register,handleSubmit,reset,formState: { errors }} = useForm()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+        defaultValues: {
+            password: ''
+        }
+    })
     const dispatch=useDispatch()
     const status=useSelector(selectResetPasswordStatus)
     const error=useSelector(selectResetPasswordError)

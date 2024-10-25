@@ -9,7 +9,7 @@ const initialState={
 
 export const fetchAllBrandsAsync=createAsyncThunk('brands/fetchAllBrandsAsync',async()=>{
     const brands=await fetchAllBrands()
-    return brands
+    return brands || []
 })
 
 const brandSlice=createSlice({
