@@ -300,7 +300,7 @@ export const ProductList = () => {
                         Reset
                       </MenuItem>
                       {sortOptions.map((option) => (
-                        <MenuItem key={option.name} value={option.sort} defaultValue={''}>
+                        <MenuItem key={option.name} value={option} defaultValue={''}>
                           {option.name}
                         </MenuItem>
                       ))}
