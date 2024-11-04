@@ -2,7 +2,7 @@ import { axiosi } from "../../config/axios";
 
 export const addProduct=async(data)=>{
     try {
-        const res=await axiosi.post('/products',data)
+        const res=await axiosi.post('/api/products',data)
         return res.data
     } catch (error) {
         throw error.response.data
@@ -32,7 +32,7 @@ export const fetchProducts=async(filters)=>{
     }
     
     try {
-        const res=await axiosi.get(`/products?${queryString}`)
+        const res=await axiosi.get(`/api/products?${queryString}`)
         const totalResults=await res.headers.get("X-Total-Count")
         return {data:res.data,totalResults:totalResults}
     } catch (error) {
@@ -41,7 +41,7 @@ export const fetchProducts=async(filters)=>{
 }
 export const fetchProductById=async(id)=>{
     try {
-        const res=await axiosi.get(`/products/${id}`)
+        const res=await axiosi.get(`/api/products/${id}`)
         return res.data
     } catch (error) {
         throw error.response.data
@@ -49,7 +49,7 @@ export const fetchProductById=async(id)=>{
 }
 export const updateProductById=async(update)=>{
     try {
-        const res=await axiosi.patch(`/products/${update._id}`,update)
+        const res=await axiosi.patch(`/api/products/${update._id}`,update)
         return res.data
     } catch (error) {
         throw error.response.data
@@ -57,7 +57,7 @@ export const updateProductById=async(update)=>{
 }
 export const undeleteProductById=async(id)=>{
     try {
-        const res=await axiosi.patch(`/products/undelete/${id}`)
+        const res=await axiosi.patch(`/api/products/undelete/${id}`)
         return res.data
     } catch (error) {
         throw error.response.data
@@ -65,7 +65,7 @@ export const undeleteProductById=async(id)=>{
 }
 export const deleteProductById=async(id)=>{
     try {
-        const res=await axiosi.delete(`/products/${id}`)
+        const res=await axiosi.delete(`/api/products/${id}`)
         return res.data
     } catch (error) {
         throw error.response.data
