@@ -36,7 +36,12 @@ export const ProductCard = ({id,title,price,thumbnail,brand,stockQuantity,handle
 
     const handleAddToCart=async(e)=>{
         e.stopPropagation()
-        const data={user:loggedInUser?._id,product:id}
+        if (!loggedInUser) {
+            navigate('/login')
+            return
+        }
+        const data = { user: loggedInUser?._id, product: id }
+            
         dispatch(addToCartAsync(data))
     }
 

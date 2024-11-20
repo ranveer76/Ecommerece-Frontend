@@ -64,8 +64,9 @@ export const Navbar = ({ isProductList = true }) => {
     {
       name: loggedInUser?.isAdmin ? "Orders" : "My orders",
       to: loggedInUser?.isAdmin ? "/admin/orders" : "/orders",
-    },
-    { name: "Logout", to: "/logout" },
+      },
+      !loggedInUser ? { name: "Login", to: "/login" } : { name: "My Carts", to: "/cart" },
+      !loggedInUser ? { name: "Signup", to: "/signup" } : { name: "Logout", to: "logout" },
   ];
 
   return (
@@ -144,8 +145,8 @@ export const Navbar = ({ isProductList = true }) => {
             )}
             {settings.map(
               (setting) =>
-                !(setting.name === "Profile" && loggedInUser?.isAdmin) && (
-                  <MenuItem key={setting.name + setting} onClick={handleCloseUserMenu}>
+                !(setting?.name === "Profile" && loggedInUser?.isAdmin) && (
+                  <MenuItem key={setting?.name + setting} onClick={handleCloseUserMenu}>
                     <Typography
                       component={Link}
                       color={"text.primary"}
@@ -153,7 +154,7 @@ export const Navbar = ({ isProductList = true }) => {
                     to={setting.to}           
                       textAlign="center"
                     >
-                      {setting.name}
+                      {setting?.name}
                     </Typography>
                   </MenuItem>
                 )

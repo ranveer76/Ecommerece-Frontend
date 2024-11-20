@@ -166,7 +166,11 @@ export const ProductDetails = () => {
     };
   }, [dispatch]);
 
-  const handleAddToCart = () => {
+    const handleAddToCart = () => {
+        if (!loggedInUser) {
+            toast.error("Please login to add product to cart");
+            return;
+        }
     const item = { user: loggedInUser._id, product: id, quantity };
     dispatch(addToCartAsync(item));
     setQuantity(1);
@@ -189,7 +193,11 @@ export const ProductDetails = () => {
   };
 
   const handleAddRemoveFromWishlist = (e) => {
-    if (e.target.checked) {
+      if (e.target.checked) {
+          if (!loggedInUser) {
+              toast.error("Please login to add product to wishlist");
+              return;
+            }
       const data = { user: loggedInUser?._id, product: id };
       dispatch(createWishlistItemAsync(data));
     } else if (!e.target.checked) {
