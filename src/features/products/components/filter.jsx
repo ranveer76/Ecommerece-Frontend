@@ -63,7 +63,7 @@ const FilterComponent = ({ brands, categories, filters, setFilters }) => {
                     sx={{ ml: 1 }}
                     control={
                         <Checkbox
-                        checked={filters.brand.includes(brand._id)}
+                        checked={filters?.brand?.includes(brand._id)}
                         onChange={handleBrandFilters}
                         value={brand._id || ""}
                       />
@@ -100,7 +100,7 @@ const FilterComponent = ({ brands, categories, filters, setFilters }) => {
                     sx={{ ml: 1 }}
                     control={
                         <Checkbox
-                            checked={filters.category.includes(category._id)}
+                            checked={filters?.category?.includes(category._id)}
                         onChange={handleCategoryFilters}
                         value={category._id || ""}
                       />

@@ -167,12 +167,12 @@ export const ProductUpdate = () => {
                                   Featured
                               </InputLabel>
                               <Select
+                              defaultValue={selectedProduct.featured}
                                   {...register('featured', {
                                       required: 'Featured is required',
                                   })}
                                   labelId='featured-selection'
                                   label='Featured'
-                                  defaultValue=''
                               >
                                   <MenuItem value={true}>Yes</MenuItem>
                                   <MenuItem value={false}>No</MenuItem>

@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import { fetchAllCategories } from './CategoriesApi'
+import { fetchAllCategories, addCategory, updateCategory } from './CategoriesApi'
 
 const initialState={
     status:"idle",
@@ -10,6 +10,16 @@ const initialState={
 export const fetchAllCategoriesAsync=createAsyncThunk('categories/fetchAllCategoriesAsync',async()=>{
     const categories=await fetchAllCategories()
     return categories
+})
+
+export const addCategoryAsync = createAsyncThunk('categories/addCategoryAsync', async (category) => {
+    const newCategory = await addCategory(category)
+    return newCategory
+})
+
+export const updateCategoryAsync = createAsyncThunk('categories/updateCategoryAsync', async (category) => {
+    const updatedCategory = await updateCategory(category)
+    return updatedCategory
 })
 
 const categorySlice=createSlice({
@@ -30,6 +40,30 @@ const categorySlice=createSlice({
                 state.errors=action.error
             })
 
+        
+            .addCase(addCategoryAsync.pending,(state)=>{
+                state.status='idle'
+            })
+            .addCase(addCategoryAsync.fulfilled,(state,action)=>{
+                state.status='fulfilled'
+                state.categories.push(action.payload)
+            })
+            .addCase(addCategoryAsync.rejected,(state,action)=>{
+                state.status='rejected'
+                state.errors=action.error
+            })
+        
+            .addCase(updateCategoryAsync.pending,(state)=>{
+                state.status='idle'
+            })
+            .addCase(updateCategoryAsync.fulfilled,(state,action)=>{
+                state.status='fulfilled'
+                state.categories=state.categories.map(category=>category.id===action.payload.id?action.payload:category)
+            })
+            .addCase(updateCategoryAsync.rejected,(state,action)=>{
+                state.status='rejected'
+                state.errors=action.error
+            })
     }
 })
 

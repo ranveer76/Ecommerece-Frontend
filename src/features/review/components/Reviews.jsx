@@ -100,7 +100,7 @@ export const Reviews = ({productId,averageRating}) => {
             <Stack>
                 <Typography gutterBottom variant='h4' fontWeight={400}>Reviews</Typography>
                 {
-                    reviews?.length?(
+                    reviews?.length > 0 ?(
                         <Stack rowGap={3}>
 
                             <Stack rowGap={1} >
@@ -132,7 +132,7 @@ export const Reviews = ({productId,averageRating}) => {
             </Stack>
 
             <Stack rowGap={2} >
-                {reviews?.map((review)=>(<ReviewItem key={review._id} id={review._id} userid={review.user._id} comment={review.comment} createdAt={review.createdAt} rating={review.rating} username={review.user.name} />))}
+                {reviews.length > 0 && reviews?.map((review)=>(<ReviewItem key={review._id} id={review._id} userid={review.user._id} comment={review.comment} createdAt={review.createdAt} rating={review.rating} username={review.user.name} />))}
             </Stack>
 
             
