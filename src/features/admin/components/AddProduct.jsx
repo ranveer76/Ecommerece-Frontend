@@ -131,6 +131,19 @@ export const AddProduct = () => {
                 ))}
               </Select>
             </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel id="featured-selection">Featured</InputLabel>
+                <Select
+                    {...register("featured", { required: "Featured is required" })}
+                    labelId="featured-selection"
+                    label="Featured"
+                  defaultValue=""
+              >
+                  <MenuItem value={true}>Yes</MenuItem>
+                  <MenuItem value={false}>No</MenuItem>
+              </Select>
+            </FormControl>
           </Stack>
 
           <Stack>
@@ -186,7 +199,7 @@ export const AddProduct = () => {
             </Typography>
             <TextField
               {...register("thumbnail", { required: "Thumbnail is required" })}
-            />
+            />   
           </Stack>
 
           <Stack>

@@ -30,7 +30,7 @@ export const ProductCard = ({id,title,price,thumbnail,brand,stockQuantity,handle
     const is488=useMediaQuery(theme.breakpoints.down(488))
     const is408=useMediaQuery(theme.breakpoints.down(408))
 
-    isProductAlreadyinWishlist=wishlistItems.some((item)=>item.product._id===id)
+    isProductAlreadyinWishlist= typeof wishlistItems === "object" && wishlistItems.some((item)=>item.product._id===id)
 
     const isProductAlreadyInCart=cartItems.some((item)=>item.product._id===id)
 

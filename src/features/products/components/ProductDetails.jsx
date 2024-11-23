@@ -86,7 +86,7 @@ export const ProductDetails = () => {
   const isProductAlreadyInCart = cartItems.some(
     (item) => item.product._id === id
   );
-  const isProductAlreadyinWishlist = wishlistItems.some(
+  const isProductAlreadyinWishlist = (typeof wishlistItems === "object") && wishlistItems.some(
     (item) => item.product._id === id
   );
 
@@ -263,7 +263,6 @@ export const ProductDetails = () => {
                 </Typography>
               </Stack>
               <Stack
-                width={is480 ? "auto" : is1420 ? "auto" : "88rem"}
                 p={is480 ? 2 : 0}
                 height={is840 ? "auto" : "50rem"}
                 rowGap={5}
@@ -272,6 +271,7 @@ export const ProductDetails = () => {
                 mb={5}
                 flexDirection={is840 ? "column" : "row"}
                 columnGap={is990 ? "2rem" : "5rem"}
+                pr={is1420 || is990 || is840 || is500 ? "0" : "2rem"}
               >
                 <Stack
                   sx={{
@@ -310,7 +310,7 @@ export const ProductDetails = () => {
 
                   <Stack mt={is480 ? "0rem" : "5rem"}>
                     {is1420 ? (
-                      <Stack width={is480 ? "100%" : is990 ? "400px" : "500px"}>
+                      <Stack width={is480 || is340 || is387 ? "100dvw" : is990 ? "400px" : "500px"}>
                         <Swiper
                           modules={[Autoplay]}
                           spaceBetween={50}

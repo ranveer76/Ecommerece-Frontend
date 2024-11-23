@@ -30,6 +30,9 @@ export const fetchProducts=async(filters)=>{
     if(filters.user){
         queryString+=`user=${filters.user}&`
     }
+    if(filters.featured){
+        queryString+=`featured=${filters.featured}&`
+    }
     
     try {
         const res=await axiosi.get(`/api/products?${queryString}`)

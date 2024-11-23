@@ -50,23 +50,30 @@ export const Navbar = ({ isProductList = true }) => {
     
     const location = useLocation();
     React.useEffect(() => {
-        // console.log(location)
-        if (location.pathname === '/admin/dashboard' || location.pathname === '/') setVisible(true)
-        else setVisible(false)
-    },[location])
+        if (
+            location.pathname === '/admin/dashboard' ||
+            location.pathname === '/'
+        )
+            setVisible(true);
+        else setVisible(false);
+    }, [location]);
 
   const settings = [
-    { name: "Home", to: "/" },
-    {
-      name: "Profile",
-      to: loggedInUser?.isAdmin ? "/admin/profile" : "/profile",
-    },
-    {
-      name: loggedInUser?.isAdmin ? "Orders" : "My orders",
-      to: loggedInUser?.isAdmin ? "/admin/orders" : "/orders",
+      { name: 'Home', to: '/' },
+      {
+          name: 'Profile',
+          to: loggedInUser?.isAdmin ? '/admin/profile' : '/profile',
       },
-      !loggedInUser ? { name: "Login", to: "/login" } : { name: "My Carts", to: "/cart" },
-      !loggedInUser ? { name: "Signup", to: "/signup" } : { name: "Logout", to: "logout" },
+      {
+          name: loggedInUser?.isAdmin ? 'Orders' : 'My orders',
+          to: loggedInUser?.isAdmin ? '/admin/orders' : '/orders',
+      },
+      !loggedInUser
+          ? { name: 'Login', to: '/login' }
+          : { name: 'My Carts', to: '/cart' },
+      !loggedInUser
+          ? { name: 'Signup', to: '/signup' }
+          : { name: 'Logout', to: '/logout' },
   ];
 
   return (
